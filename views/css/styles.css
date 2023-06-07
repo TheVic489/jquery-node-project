@@ -1,0 +1,27 @@
+.table-div {
+margin-left: 40px;
+margin-right: 40px;
+margin-top: 2%;
+margin-bottom: 10px;
+}
+table {
+margin: auto;
+}
+h2 {
+    text-align: center;
+}
+
+div.buttons-div {
+    text-align: center;
+}
+
+.success {
+    border: 2px solid ;
+    border-color: rgb(11, 203, 11);
+}
+
+.error {
+    border: 2px solid;
+    border-color:  rgb(211, 51, 51);
+
+}

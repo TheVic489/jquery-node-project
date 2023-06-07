@@ -1,0 +1,20 @@
+{
+  "name": "api-bio",
+  "version": "1.0.0",
+  "main": "server-exam.js",
+  "scripts": {
+    "start": "nodemon server-exam.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Victor",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.20.1",
+    "express": "^4.18.2",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "description": ""
+}
