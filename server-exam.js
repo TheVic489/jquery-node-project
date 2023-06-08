@@ -35,7 +35,7 @@ app.post("/add/project", (req, res) => {
 	const query = 'INSERT INTO project (name, description, category, data, lang) VALUES (?, ?, ?, ?, ?)';
     connection.query(query, [project.name, project.description, project.category, project.data, project.lang], (error, results) => {
 		if (error) {
-		  res.status(400).send({ response: null, error: error});
+		  res.status(400).send({ response: null, error: error.message});
 		} else {
 		  //Connection OK
 		  res.status(200).send({ response: results });

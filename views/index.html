@@ -96,6 +96,7 @@
 						<label for="tuUsername" class="form-label">Tu nombre:</label>
 						<div class="col-6">
 							<input type="text" class="form-control col-6 " id="tuNombre" placeholder="projecte"/>
+							<span class="text-danger" id="name-errmsg"></span>
 						</div>
 					</div>
 					<div class="mb-3 mt-3 row">
@@ -109,6 +110,8 @@
 								id="tuDescripcion"
 								placeholder="una descripció..."
 							/>
+							<span class="text-danger" id="textarea-errmsg"></span>
+
 						</div>
 					</div>
 					<div class="mb-3 mt-3 row">
@@ -119,7 +122,9 @@
 								type="text"
 								class="form-control col-6 "
 								id="tuDatePicker"
+								placeholder="dd/mm/yy"
 							/>
+							<span class="text-danger" id="date-errmsg"></span>
 						</div>
 					</div>
 
@@ -151,8 +156,8 @@
 						AÑADIR
 					</button>
 					<div class="mb-3 mt-3 row">
-						<p class="success" id="success-server-msg"></p>
-						<p class="error" id="error-server-msg"></p>
+						<p class="success form-control col-6" id="success-server-msg"></p>
+						<p class="error form-control col-6" id="error-server-msg"></p>
 					</div>
 				</form>
 			</div>

@@ -13,18 +13,25 @@ $(document).ready(function () {
 	$("#myProjects").hide();
 	$("#intranet").hide();
 	$("#fromProject").hide();
+	$("#error-server-msg").hide();
+	$("#success-server-msg").hide();
 
+	//Click on about me, hide others
 	$("#BtAboutMe").click(function () {
 		$("#aboutMe").show();
 		$("#myProjects").hide();
 		$("#intranet").hide();
 	});
+
+	//Click on my projects, hide others
 	$("#BtMyProjects").click(function () {
 		$("#myProjects").show();
 		$("#aboutMe").hide();
 		$("#intranet").hide();
 		
 	});
+
+	//Click on Intranet, hide others
 	$("#BtIntranet").click(function () {
 		$("#myProjects").hide();
 		$("#aboutMe").hide();
@@ -38,17 +45,12 @@ $(document).ready(function () {
 		}
 		$("#intranet").show();
 	});
-
-	$("#error-server-msg").hide();
-	$("#success-server-msg").hide();
-
-
-	dologin();
-	setDatePicker();
-	let logged = localStorage.getItem("session");
-
 	
-
+	dologin();       // Init login function 
+	setDatePicker(); // Init date picker
+	
+	// Init vars
+	let logged = localStorage.getItem("session");
 	// Select Option Form
 	let programLangArray = ["Python", "PHP", "Jquery"];
 	let selectElement = $("#tuSelect");
@@ -58,9 +60,11 @@ $(document).ready(function () {
 		);
 	});
 
-	// Validate Project Form //
+	// --- Validate Project Form --- //
 	$("#tuNombre").change(function () {
 		let isValid = validateName($(this));
+		if (!isValid) {
+		}
 		setValidatorState(isValid, $(this));
 		validateAllForm()
 	});
@@ -88,7 +92,7 @@ $(document).ready(function () {
 		let descripcion = $("#tuDescripcion").val();
 		let category    = $('input[type="radio"][name="categoria"]:checked').val();
 		let entry_dates = $("#tuDatePicker").val();
-		let lang        = $("#tuNombre").val();
+		let lang        = $("#tuSelect").val();
 		
 		let projectObj = new Project(name, descripcion, category, entry_dates, lang);
 		let projectStr = JSON.stringify(projectObj)
@@ -101,7 +105,9 @@ $(document).ready(function () {
 			success: function (result) {
 			  console.log("Llamada a api, add project");
 			  server_response = result.response;
-
+			  console.log("Mensaje server:");
+			  console.log('Response: ', server_response);
+				
 			  if (server_response !== null) {
 				$("#success-server-msg").text("Added project successfully");
 				$("#success-server-msg").show();
@@ -111,13 +117,35 @@ $(document).ready(function () {
 				//   $("#success-icon").show();
 				// }, 3000);
 			  } else {
-				$("error-server-msg").text("Error, Try again");
+				$("#error-server-msg").text("Error, Try again");
 				$("#error-server-msg").show();
 				$("#success-server-msg").hide();
 			  }
 			},
+			// error: function (error) {
+			// 	console.log(error);
+			// 	console.log(error.responseJSON.error);
+			// 	$("#error-server-msg").text("Error, Try again");
+			// 	$("#error-server-msg").show();
+			// 	$("#success-server-msg").hide();
+			// },
+		  })
+		  .fail(function(jqXHR, textStatus, errorThrown) {
+			if (jqXHR.status === 400) {
+			  // Ma	nejo específico para el error 400 (Bad Request)
+			  console.log("Error 400: Bad Request");
+				$("#error-server-msg").text("Error, Try again");
+				$("#error-server-msg").show();
+				$("#success-server-msg").hide();
+			} else {
+			  // Manejo general de otros errores
+			  console.log("Error en la petición: " + textStatus + ", " + errorThrown);
+			  $("#error-server-msg").text("Error, Try again");
+			  $("#error-server-msg").show();
+			  $("#success-server-msg").hide()
+			}
 		  });
-
+		  										
 		});	
 	//-----------------FUNCTIONS---------------//
 	function dologin() {
@@ -157,7 +185,7 @@ $(document).ready(function () {
 			console.log('En valido')
 			$("#btProject").prop('disabled', false);
 		} else {
-			$('#errorProjects').html("Revisa el formulario, hay un error")
+			$('#errorProjects').html("Rellena todos los campos")
 			$("#btProject").prop('disabled', true);
 
 		  }
@@ -183,8 +211,10 @@ $(document).ready(function () {
 			/(^[a-zA-Z \u00C0-\u017F]{3,16})([ ]{0,1})([a-zA-Z\u00C0-\u017F]{3,16})?([ ]{0,1})?([a-zA-Z\u00C0-\u017F]{3,16})?([ ]{0,1})?([a-zA-Z\u00C0-\u017F]{3,16})/;
 
 		if (regExp.test(name_value)) {
+			$('#name-errmsg').empty();
 			return true;
 		} else {
+			$('#name-errmsg').html('Invalid name');
 			return false;
 		}
 	}
@@ -192,12 +222,22 @@ $(document).ready(function () {
 	function validateTextArea(descripcion) {
 		let description_value = $(descripcion).val();
 		if (description_value.length >= 1 && description_value.length < 100) {
+			$('#textarea-errmsg').empty();
 			return true;
 		} else {
+			$('#textarea-errmsg').html('Invalid description');
 			return false;
 		}
 	}
-
+	function validateEmail(email) {
+		const regex = /^[a-zA-Z0-9.!/]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*$/;
+		return regex.test(email);
+	  }
+	  
+	function validateTel(tel) {
+		const regex = /^\d{9}$/; // Expresión regular para validar 9 dígitos
+		return regex.test(tel);
+	}
 	/**
 	 * Function that valisdate if date picked by user to modify it it is a valid date or not
 	 * @param {*} date new date to modify
@@ -215,8 +255,10 @@ $(document).ready(function () {
 		let correct_date = new_date.getTime() < today.getTime();
 
 		if (correct_date) {
+			$('#date-errmsg').empty();
 			return true;
 		} else {
+			$('#date-errmsg').html('Invalid date');
 			return false;
 		}
 	}
